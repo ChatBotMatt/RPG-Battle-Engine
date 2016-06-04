@@ -1,0 +1,164 @@
+Name:Attack
+Description:A basic attack, uses your weapon element.
+Level:1
+Cost:0
+Type:Physical
+Element:Weapon
+Vocation:All
+Heal:False
+Effect:None
+Intensity:0
+Chance:0
+Damage:5
+Target:Other
+End:end
+
+Name:Defend
+Description:Reduces damage by 50% for one turn.
+Level:1
+Cost:0
+Type:Physical
+Element:Physical
+Vocation:All
+Heal:False
+Effect:ReduceDamage
+Intensity:50
+Duration:12
+Chance:100
+Damage:0
+Target:Self
+End:end
+
+Name:Flee
+Description:Flee from battle.
+Level:1
+Cost:0
+Type:None
+Element:None
+Vocation:All
+Heal:False
+Effect:Flee
+Intensity:0
+Duration:1
+Chance:70
+Damage:0
+Target:Self
+End:end
+
+Name:Channel Mana
+Description:Increase your mana regen by 200% for 5 turns.
+Level:1
+Cost:0
+Type:Magical
+Element:Magic
+Vocation:All
+Heal:False
+Effect:ManaRegenUp
+Intensity:200
+Duration:5
+Chance:100
+Damage:0
+Target:Self
+End:end
+
+Name:
+Description:
+Level:
+Cost:
+Type:None
+Element:
+Vocation:All
+Heal:False
+Effect:
+Intensity:
+Duration:
+Chance:
+Damage:
+Target:
+End:end
+
+Name:
+Description:
+Level:
+Cost:
+Type:None
+Element:
+Vocation:All
+Heal:False
+Effect:
+Intensity:
+Duration:
+Chance:
+Damage:
+Target:
+End:end
+
+Name:
+Description:
+Level:
+Cost:
+Type:None
+Element:
+Vocation:All
+Heal:False
+Effect:
+Intensity:
+Duration:
+Chance:
+Damage:
+Target:
+End:end
+
+Name:
+Description:
+Level:
+Cost:
+Type:None
+Element:
+Vocation:All
+Heal:False
+Effect:
+Intensity:
+Duration:
+Chance:
+Damage:
+Target:
+End:end
+
+Name:Flame Blast //Name.
+Description:Send a blast of fire at an enemy, has a moderate chance of burning them. //Description.
+Level:5 //They start at level 1, cap at level 25.
+Cost: //Mana cost
+Type:Magical //Physical (Hitting), Magical (Magic stuff), or None (Things like fleeing, guarding, non-magic buffs)
+Element:Fire //Various elements. This and Vocations are either "don't worry about them" or "Put best guess", unless you want to see the huge vocation tree/elemental Rock Paper Scissors.
+Vocation:Elemental //Vocations are classes.
+Vocation:Hybrid
+Vocation:Pyromancer
+Vocation:Inferno
+Heal:False //Whether it's a healing move.
+Effect:Burn //You can put pretty much any effect. :)
+Intensity:5 //How strong the effect is.
+Duration:3 //How many turns the enemy is affected.
+Chance:60 //Chance of the effect happening, when you activate the skill.
+Damage:12 //Base damage the skill does. Fire Blast is a level 7 skill, which is fairly low (First specialisation)
+Target:Other //Targets can be "Self", "Other" (One monster), "Ally", "All Other" (All monsters), All Ally, or All (Both sides).
+End:end
+
+Name:Hydro Blast
+Description:
+Level:
+Cost:
+Type:Magical
+Element:Water
+Vocation:Elemental
+Vocation:Hybrid
+Vocation:Hydromancer
+Vocation:Tsunami
+Heal:False
+Effect:Douse
+Intensity:
+Duration:4
+Chance:80
+Damage:12
+Target:Other
+End:end
