@@ -1,11 +1,12 @@
 
 public class Character {
 	String name;
+	int attack;
+	int defence;
+	int strength;
+	int intelligence;
+	int dexterity;
 	//More stats here.
-	//Current stats: ATK, DEF, STR, INT, DEX
-	String testStat;
-	String test2;
-	String test3;
 
 	public Character() {
 		
