@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+
 
 public class Main {
 	
@@ -7,9 +7,13 @@ public class Main {
 		
 	}
 	
-	public static void main(String[] args) {
+	public void runApp(){
 		
-
+	}
+	
+	public static void main(String[] args) {
+		Main main = new Main();
+		main.runApp();
 	}
 
 }
