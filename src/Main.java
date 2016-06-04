@@ -13,12 +13,12 @@ public class Main {
 				Thread.sleep(1);
 				boolean playerTurn = player.updateTurnPoints();
 				boolean monsterTurn = monster.updateTurnPoints();
-				if (playerTurn){
+				if (playerTurn) {
 					System.out.println(player.getName() + " is acting now. ");
 					player.attack(monster);
 					player.setTurnPoints(0);
 				}
-				if (monsterTurn){
+				if (monsterTurn) {
 					System.out.println(monster.getName() + " is acting now. ");
 					monster.attack(player);
 					monster.setTurnPoints(0);
@@ -31,5 +31,4 @@ public class Main {
 		Main main = new Main();
 		main.runApp();
 	}
-
 }

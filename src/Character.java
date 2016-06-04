@@ -88,12 +88,27 @@ public class Character {
 	/**
 	 * Called when equipment changes, or a stat-affecting action (E.g. (de)buff, tactics) occurs.
 	 */
-	public void updateStats(double attackModifier, double defenceModifier, double strengthModifier, double intelligenceModifier, double speedModifier, double dexterityModifier){
+	public void updateAttack(double attackModifier){
 		attack = (int)(attackModifier*(baseAttack + equipAttack));
+	}
+	
+	public void updateDefence(double defenceModifier){
 		defence = (int)(defenceModifier*(baseDefence + equipDefence));
+	}
+	
+	public void updateStrength(double strengthModifier){
 		strength = (int)(strengthModifier*(baseStrength + equipStrength));
+	}
+	
+	public void updateIntelligence(double intelligenceModifier){
 		intelligence = (int)(intelligenceModifier*(baseIntelligence + equipIntelligence));
+	}
+	
+	public void updateSpeed(double speedModifier){
 		speed = (int)(speedModifier*(baseSpeed + equipSpeed));
+	}
+	
+	public void updateDexterity(double dexterityModifier){
 		dexterity = (int)(dexterityModifier*(baseDexterity + equipDexterity));
 	}
 	
