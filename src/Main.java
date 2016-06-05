@@ -34,12 +34,11 @@ public class Main {
 				boolean playerTurn = player.updateTurnPoints();
 				boolean monsterTurn = monster.updateTurnPoints();
 				if (playerTurn) {
-					System.out.println(player.getName() + " is acting now. ");
+					//System.out.println(player.getName() + " is acting now. ");
 					player.battleAction(monster);
 					player.setTurnPoints(0);
 				}
 				if (monsterTurn) {
-					System.out.println(monster.getName() + " is acting now. ");
 					monster.battleAction(player);
 					monster.setTurnPoints(0);
 				}
