@@ -308,7 +308,6 @@ public class Character {
 	private int getLevel() {
 		return level;
 	}
-<<<<<<< HEAD
 
 	public int getBaseMaxHealth() {
 		return baseMaxHealth;
@@ -334,7 +333,6 @@ public class Character {
 		this.maxHealth = maxHealth;
 	}
 
-=======
 	
 	private boolean hit(int enemyDex, int enemySpeed/*, int enemyStatus*/){
 		//TODO Add increase/decrease based on status effects (frozen, paralyzed...)
@@ -353,5 +351,4 @@ public class Character {
 		return true;
 	}
 	
->>>>>>> 5c91a8136f560c0d0f33b86e6efdd3d5f04e92ff
 }
