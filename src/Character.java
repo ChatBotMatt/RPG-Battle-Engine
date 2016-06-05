@@ -4,6 +4,7 @@ import java.util.Random;
 public class Character {
 
 	private String name;
+	private String description;
 	private int maxHealth;
 	private int health;
 	
@@ -34,6 +35,7 @@ public class Character {
 	private int deathCount;
 	private double damageDealt;
 	private double damageTaken;
+	private long money;
 	
 	private Random random;
 	
@@ -45,22 +47,28 @@ public class Character {
 		for (String[] field: characterData){
 			switch(field[0]){
 			case("Name"):
-				this.name = field[1];
+				name = field[1];
+				break;
+			case("Description"):
+				description = field[1];
+				break;
+			case("Max Health"):
+				maxHealth = Integer.parseInt(field[1]);
 				break;
 			case("Attack"):
-				this.attack = Integer.parseInt(field[1]);
+				attack = Integer.parseInt(field[1]);
 				break;
 			case("Defence"):
-				this.defence = Integer.parseInt(field[1]);
+				defence = Integer.parseInt(field[1]);
 				break;
 			case("Strength"):
-				this.strength = Integer.parseInt(field[1]);
+				strength = Integer.parseInt(field[1]);
 				break;
 			case("Intelligence"):
-				this.intelligence = Integer.parseInt(field[1]);
+				intelligence = Integer.parseInt(field[1]);
 				break;
 			case("Dexterity"):
-				this.dexterity = Integer.parseInt(field[1]);
+				dexterity = Integer.parseInt(field[1]);
 				break;
 			default:
 				System.out.println("Uh oh!");
@@ -83,8 +91,79 @@ public class Character {
 		
 		random = new Random();
 	}
+	
+	public boolean updateTurnPoints(){
+		int randomBuffer = random.nextInt(100);
+		turnPoints+=(speed+(randomBuffer/100));
+		if (turnPoints > 100){ //Stops it from going over the max value.
+			turnPoints = 100;
+			return true;
+		}
+		return false;
+	}
+	
+	public void battleAction(Character target){
+		boolean attack = random.nextBoolean();
+		if (attack){
+			attack(target);
+		}
+		else{
+			flee(target.getLevel(), target.getSpeed());
+		}
+	}
 
+	private void attack(Character target){
+		int targetDefence = target.getDefence();
+		double damage = (attack + (0.5*strength) - (0.5*targetDefence));
+		if (damage <= 0){
+			damage = 1;
+		}
+		target.damage(damage);
+	}
+	
+	private void damage(double damageTaken){
+		health-= damageTaken;
+		System.out.println(name + " has taken " + damageTaken + " points of damage!");
+		if (health <= 0){
+			System.out.println(name + " has died!");
+			System.exit(0);
+		}
+	}
+	
+	private boolean flee(int enemyLevel, int enemySpeed){
+		//TODO Buffs/Statuses affect it
+		int fleeChance = 65 - (3*(enemySpeed - speed));
+		if (fleeChance > 95){
+			fleeChance = 95;
+		}
+		else if (fleeChance < 5){
+			fleeChance = 5;
+		}
 
+		int fleeRoll = random.nextInt();
+		if (fleeRoll <= fleeChance){
+			//TODO Drop money upon fleeing, based on level and your luck.
+			int moneyDropModifier = (level - enemyLevel);
+			int randomMoney = (1 + random.nextInt(5));
+			long moneyDrop = (moneyDropModifier*randomMoney) + (money/randomMoney);
+			if (moneyDrop > money){
+				moneyDrop = money;
+			}
+			System.out.println("In " + name + "'s haste to flee, they dropped " + moneyDrop + " gold coins!");			
+			return true;
+		}
+		return false;
+		
+		//Test scenarios.
+		/*A = 70 - 3(x-y)
+		 * 1, 1 = 65% No advantage
+		 * 1, 5 = 65 + 15 = 80% Significant player advantage
+		 * 5, 1 = 50% Significant mob advantage
+		 * 10, 1 = 35% Extreme mob advantage
+		 * 1, 10 = 95% Extreme player advantage
+		 * */
+	}
+	
 	/**
 	 * Called when equipment changes, or a stat-affecting action (E.g. (de)buff, tactics) occurs.
 	 */
@@ -110,34 +189,6 @@ public class Character {
 	
 	public void updateDexterity(double dexterityModifier){
 		dexterity = (int)(dexterityModifier*(baseDexterity + equipDexterity));
-	}
-	
-	public boolean updateTurnPoints(){
-		int randomBuffer = random.nextInt(100);
-		turnPoints+=(speed+(randomBuffer/100));
-		if (turnPoints > 100){ //Stops it from going over the max value.
-			turnPoints = 100;
-			return true;
-		}
-		return false;
-	}
-	
-	public void attack(Character target){
-		int targetDefence = target.getDefence();
-		double damage = (attack + (0.5*strength) - (0.5*targetDefence));
-		if (damage <= 0){
-			damage = 1;
-		}
-		target.damage(damage);
-	}
-	
-	public void damage(double damageTaken){
-		health-= damageTaken;
-		System.out.println(name + " has taken " + damageTaken + " points of damage!");
-		if (health <= 0){
-			System.out.println(name + " has died!");
-			System.exit(0);
-		}
 	}
 	
 	public String getName() {
@@ -202,6 +253,10 @@ public class Character {
 
 	public void setTurnPoints(int turnPoints) {
 		this.turnPoints = turnPoints;
+	}
+	
+	private int getLevel() {
+		return level;
 	}
 
 }
