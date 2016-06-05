@@ -1,0 +1,8 @@
+Delimiter: 
+
+Name: Lord Deathsmasher
+Attack: 5
+Defence: 5
+Strength: 5
+Dexterity: 5
+Intelligence: 5
