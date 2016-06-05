@@ -11,6 +11,10 @@ public class Main {
 
 	}
 
+	/**
+	 * Creates two characters, simulates a battle to the death. 
+	 * @throws InterruptedException
+	 */
 	public void runApp() throws InterruptedException {
 		/*try {
 			ArrayList<ArrayList<String[]>> fileData = characterReader.readFile();

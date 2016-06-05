@@ -8,6 +8,7 @@ public class Character {
 	private int maxHealth;
 	private int health;
 	
+	//Total stats, as decided by formulas based on base[Stat] and equip[Stat]. 
 	private int attack;
 	private int defence;
 	private int strength;
@@ -15,6 +16,8 @@ public class Character {
 	private int speed; //Used for turn order.
 	private int dexterity;
 	
+	//Base stats, affected by levelling.
+	private int baseMaxHealth;
 	private int baseAttack;
 	private int baseDefence;
 	private int baseStrength;
@@ -22,6 +25,8 @@ public class Character {
 	private int baseSpeed;
 	private int baseDexterity;
 	
+	//Stat bonuses given by equipment. E.g. A longsword gives +2 to speed.
+	private int equipMaxHealth;
 	private int equipAttack;
 	private int equipDefence;
 	private int equipStrength;
@@ -36,13 +41,14 @@ public class Character {
 	private double damageDealt;
 	private double damageTaken;
 	private long money;
-	
-	private Random random;
-	
-	//More stats here.
-	
 	private double turnPoints; //At 100, they can act.
 
+	private Random random;
+	
+	/**
+	 * Creates a character based on data read in by a Reader object. Iterates through characterData's stored key-value pairs, settings fields as appropriate.
+	 * @param characterData Data read in by a Reader object, holds multiple key-value pairs.
+	 */
 	public Character(ArrayList<String[]> characterData) {
 		for (String[] field: characterData){
 			switch(field[0]){
@@ -53,7 +59,7 @@ public class Character {
 				description = field[1];
 				break;
 			case("Max Health"):
-				maxHealth = Integer.parseInt(field[1]);
+				setMaxHealth(Integer.parseInt(field[1]));
 				break;
 			case("Attack"):
 				attack = Integer.parseInt(field[1]);
@@ -78,9 +84,20 @@ public class Character {
 		random = new Random();
 	}
 	
+	/**
+	 * Builds a character based on input stats.
+	 * @param name
+	 * @param maxHealth
+	 * @param attack
+	 * @param defence
+	 * @param strength
+	 * @param intelligence
+	 * @param speed
+	 * @param dexterity
+	 */
 	public Character(String name, int maxHealth, int attack, int defence, int strength, int intelligence, int speed, int dexterity) {
 		this.name = name;
-		this.maxHealth = maxHealth;
+		this.setMaxHealth(maxHealth);
 		health = maxHealth;
 		this.attack = attack;
 		this.defence = defence;
@@ -92,6 +109,11 @@ public class Character {
 		random = new Random();
 	}
 	
+	/**
+	 * Called constantly, updates turnPoints by (roughly) speed, with a tiny modifier to help prevent two characters reaching 100 at the same time.
+	 * 
+	 * @return True if they can take their turn, false if not.
+	 */
 	public boolean updateTurnPoints(){
 		int randomBuffer = random.nextInt(100);
 		turnPoints+=(speed+(randomBuffer/100));
@@ -102,6 +124,11 @@ public class Character {
 		return false;
 	}
 	
+	/**
+	 * Performs a battle action against a target. Will be AI based on stats, currently oscillates evenly between attack and flee.
+	 * 
+	 * @param target The enemy being attacked/fleed.
+	 */
 	public void battleAction(Character target){
 		boolean attack = random.nextBoolean();
 		if (attack){
@@ -112,6 +139,10 @@ public class Character {
 		}
 	}
 
+	/**
+	 * Attacks the target, based on their defence.
+	 * @param target The target to attack.
+	 */
 	private void attack(Character target){
 		int targetDefence = target.getDefence();
 		double damage = (attack + (0.5*strength) - (0.5*targetDefence));
@@ -121,6 +152,11 @@ public class Character {
 		target.damage(damage);
 	}
 	
+	/**
+	 * Inflicts damage upon the character, based on damage taken, and kills them if needed. Death currently stops the game.
+	 * 
+	 * @param damageTaken The amount of damage taken.
+	 */
 	private void damage(double damageTaken){
 		health-= damageTaken;
 		System.out.println(name + " has taken " + damageTaken + " points of damage!");
@@ -130,6 +166,14 @@ public class Character {
 		}
 	}
 	
+	/**
+	 * Checks whether they can flee the enemy, based on speed stats. If they can, drops money based on level stats. 
+	 * 
+	 * @param enemyLevel
+	 * @param enemySpeed
+	 * 
+	 * @return True if they can flee.
+	 */
 	private boolean flee(int enemyLevel, int enemySpeed){
 		//TODO Buffs/Statuses affect it
 		int fleeChance = 65 - (3*(enemySpeed - speed));
@@ -189,6 +233,10 @@ public class Character {
 	
 	public void updateDexterity(double dexterityModifier){
 		dexterity = (int)(dexterityModifier*(baseDexterity + equipDexterity));
+	}
+	
+	public void updateMaxHealth(double maxHealthModifier){
+		setMaxHealth((int)(maxHealthModifier*(baseMaxHealth + equipMaxHealth)));
 	}
 	
 	public String getName() {
@@ -257,6 +305,30 @@ public class Character {
 	
 	private int getLevel() {
 		return level;
+	}
+
+	public int getBaseMaxHealth() {
+		return baseMaxHealth;
+	}
+
+	public void setBaseMaxHealth(int baseMaxHealth) {
+		this.baseMaxHealth = baseMaxHealth;
+	}
+
+	public int getEquipMaxHealth() {
+		return equipMaxHealth;
+	}
+
+	public void setEquipMaxHealth(int equipMaxHealth) {
+		this.equipMaxHealth = equipMaxHealth;
+	}
+
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
 	}
 
 }
