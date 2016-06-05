@@ -346,6 +346,7 @@ public class Character {
 		
 		int randHit = random.nextInt();
 		if (randHit >= hitChance){
+			System.out.println(name + " missed!");
 			return false;
 		}
 		return true;
