@@ -105,7 +105,9 @@ public class Character {
 	public void battleAction(Character target){
 		boolean attack = random.nextBoolean();
 		if (attack){
-			attack(target);
+			if( hit(target.getDexterity(), target.getSpeed())){
+				attack(target);
+			}
 		}
 		else{
 			flee(target.getLevel(), target.getSpeed());
@@ -258,5 +260,22 @@ public class Character {
 	private int getLevel() {
 		return level;
 	}
-
+	
+	private boolean hit(int enemyDex, int enemySpeed/*, int enemyStatus*/){
+		//TODO Add increase/decrease based on status effects (frozen, paralyzed...)
+		int maxChance = 95;
+		double hitChance = 65;
+		hitChance=hitChance+(dexterity-enemyDex)+(0.5*(speed-enemySpeed));
+		
+		if (hitChance>maxChance){
+			hitChance = maxChance;
+		}
+		
+		int randHit = random.nextInt();
+		if (randHit >= hitChance){
+			return false;
+		}
+		return true;
+	}
+	
 }
