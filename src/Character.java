@@ -345,11 +345,13 @@ public class Character {
 		}
 		
 		int randHit = random.nextInt();
-		if (randHit >= hitChance){
+		
+		if (hitChance <= randHit){
 			System.out.println(name + " missed!");
-			return false;
+			return true;
 		}
-		return true;
+		
+		return false;
 	}
 	
 }

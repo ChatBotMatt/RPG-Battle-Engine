@@ -3,9 +3,9 @@ import java.util.ArrayList;
 
 public class Main {
 	
-	/*Reader characterReader = new Reader("Character.txt");
+	Reader characterReader = new Reader("Character.txt");
 	ArrayList<ArrayList<String[]>> fileData;
-	Character player;*/
+	Character player;
 	
 	public Main() {
 
