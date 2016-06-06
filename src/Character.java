@@ -381,5 +381,10 @@ public class Character {
 		}
 		return true;
 	}
+
+	public Character selectTarget() {
+		// TODO Choose a target based on AI, or bring up menu.
+		return null;
+	}
 	
 }
