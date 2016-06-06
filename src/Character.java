@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Character {
+	
+	int countHit;
+	int countMiss;
 
 	private String name;
 	private String description;
@@ -143,15 +146,32 @@ public class Character {
 
 	/**
 	 * Attacks the target, based on their defence.
+	 * 
+	 * Note: Random buffer is much more distinctive at very low base damages.
 	 * @param target The target to attack.
 	 */
 	private void attack(Character target){
 		int targetDefence = target.getDefence();
-		double damage = (attack + (0.5*strength) - (0.5*targetDefence));
-		if (damage <= 0){
+		double damage = Math.ceil((attack + (0.5*strength) - (0.5*targetDefence)));
+		
+		int damageBufferMax = 20;
+		int damageBufferPercent = 100/damageBufferMax;
+		int damageRollBound = (int)(damage/damageBufferPercent);
+		if (damageRollBound < 1){
+			damageRollBound = 1;
+		}
+		
+		boolean damageRollPositive = random.nextBoolean(); //Randomly decides whether the random damage buffer is good or bad.
+		int damageRoll = random.nextInt(++damageRollBound); //Gets up to damageBufferPercent% (20%) of the base damage as a buffer.
+		if (!damageRollPositive){ //Sets it to be negative if apt.
+			damageRoll = -damageRoll;
+		}
+		damage += damageRoll; //Changes damage appropriately.
+		
+		if (damage <= 0){ //Stops negative damage.
 			damage = 1;
 		}
-		target.damage(damage);
+		target.damage(damage); //Inflicts damage to enemy.
 	}
 	
 	/**
@@ -164,6 +184,7 @@ public class Character {
 		System.out.println(name + " has taken " + damageTaken + " points of damage!");
 		if (health <= 0){
 			System.out.println(name + " has died!");
+			System.out.println("There were " + countHit + " hits and " + countMiss + " misses.");
 			System.exit(0);
 		}
 	}
@@ -178,19 +199,23 @@ public class Character {
 	 */
 	private boolean flee(int enemyLevel, int enemySpeed){
 		//TODO Buffs/Statuses affect it
-		int fleeChance = 65 - (3*(enemySpeed - speed));
-		if (fleeChance > 95){
-			fleeChance = 95;
+		int maxChance = 95;
+		int minChance = 5;
+		int baseChance = 65;
+		
+		int fleeChance = baseChance - (3*(enemySpeed - speed));
+		if (fleeChance > maxChance){
+			fleeChance = maxChance;
 		}
-		else if (fleeChance < 5){
-			fleeChance = 5;
+		else if (fleeChance < minChance){
+			fleeChance = minChance;
 		}
 
-		int fleeRoll = random.nextInt();
+		int fleeRoll = random.nextInt(100);
 		if (fleeRoll <= fleeChance){
 			//TODO Drop money upon fleeing, based on level and your luck.
 			int moneyDropModifier = (level - enemyLevel);
-			int randomMoney = (1 + random.nextInt(5));
+			int randomMoney = (1 + random.nextInt(10));
 			long moneyDrop = (moneyDropModifier*randomMoney) + (money/randomMoney);
 			if (moneyDrop > money){
 				moneyDrop = money;
@@ -333,25 +358,28 @@ public class Character {
 		this.maxHealth = maxHealth;
 	}
 
-	
 	private boolean hit(int enemyDex, int enemySpeed/*, int enemyStatus*/){
 		//TODO Add increase/decrease based on status effects (frozen, paralyzed...)
 		int maxChance = 95;
-		double hitChance = 65;
+		int minChance = 20;
+		double hitChance = 75;
 		hitChance=hitChance+(dexterity-enemyDex)+(0.5*(speed-enemySpeed));
 		
-		if (hitChance>maxChance){
+		if (hitChance > maxChance){
 			hitChance = maxChance;
 		}
+		else if (hitChance < minChance){
+			hitChance= minChance;
+		}
 		
-		int randHit = random.nextInt();
+		int randHit = random.nextInt(100);
 		
 		if (hitChance <= randHit){
 			System.out.println(name + " missed!");
-			return true;
+			countMiss++;
+			return false;
 		}
-		
-		return false;
+		return true;
 	}
 	
 }

@@ -11,6 +11,7 @@ public class Main {
 
 	}
 
+
 	/**
 	 * Creates two characters, simulates a battle to the death. 
 	 * @throws InterruptedException
@@ -26,8 +27,8 @@ public class Main {
 			player = new Character(character);
 		}*/
 		
-		Character player = new Character("Player", 50, 2, 2, 2, 2, 2, 2);
-		Character monster = new Character("Monster", 50, 2, 2, 2, 2, 2, 2);
+		Character player = new Character("Player", 50, 10, 10, 2, 2, 2, 2);
+		Character monster = new Character("Monster", 50, 10, 10, 2, 2, 2, 2);
 		while (true) {
 			while ((player.getTurnPoints() <= 100) && (monster.getTurnPoints() <= 100)) { //While neither is ready to act.
 				Thread.sleep(1);
