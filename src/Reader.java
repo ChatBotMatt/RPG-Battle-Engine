@@ -5,14 +5,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Reader {
-	ArrayList<ArrayList<String[]>> fileData;
-	String filename;
-	FileReader fileReader;
-	BufferedReader bufferedReader;
-	String currentLine;
-	int lineCount;
-	int linesRead;
-	String delimiter;
+	private ArrayList<ArrayList<String[]>> fileData;
+	private String filename;
+	private FileReader fileReader;
+	private BufferedReader bufferedReader;
+	private String currentLine;
+	private int lineCount;
+	private int linesRead;
+	private String delimiter;
 
 	public Reader(String filename) {
 		this.filename = filename;
@@ -100,6 +100,15 @@ public class Reader {
 				dataArray[1] = content;
 				sectionData.add(dataArray);
 			}
+		}
+	}
+	
+	public void printData(){
+		for (ArrayList<String[]> section: fileData){
+			for (String[] pair: section){
+				pair.toString();
+			}
+			System.out.println();
 		}
 	}
 	

@@ -3,9 +3,7 @@ import java.util.ArrayList;
 
 public class Main {
 	
-	Reader characterReader = new Reader("Character.txt");
-	ArrayList<ArrayList<String[]>> fileData;
-	Character player;
+	Game gameEngine;
 	
 	public Main() {
 
@@ -16,17 +14,12 @@ public class Main {
 	 * @throws InterruptedException
 	 */
 	public void runApp() throws InterruptedException {
-		ArrayList<ArrayList<String[]>> fileData = characterReader.readFile();
-		
-		for (ArrayList<String[]> character: fileData){
-			player = new Character(character);
-		}
+		gameEngine = new Game();
+		gameEngine.runGame();
 	}
 
 	public static void main(String[] args) throws InterruptedException {
 		Main main = new Main();
-		Game gameEngine = new Game();
-		gameEngine.runGame();
 		main.runApp();
 	}
 }
