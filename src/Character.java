@@ -1,15 +1,16 @@
 import java.util.ArrayList;
 import java.util.Random;
 
+import mam95.tools.IO.IO;
+
 public class Character {
-	
-	int countHit;
-	int countMiss;
 
 	private String name;
 	private String description;
 	private int maxHealth;
+	private int maxMana;
 	private int health;
+	private int mana;
 	
 	//Total stats, as decided by formulas based on base[Stat] and equip[Stat]. 
 	private int attack;
@@ -36,7 +37,8 @@ public class Character {
 	private int equipIntelligence;
 	private int equipSpeed;
 	private int equipDexterity;
-	
+
+	private String AI;
 	private long experience;
 	private int level;
 	private int killCount;
@@ -47,12 +49,15 @@ public class Character {
 	private double turnPoints; //At 100, they can act.
 
 	private Random random;
+	private Game gameEngine;
+	private IO input; //Handles I/O operations.
 	
 	/**
 	 * Creates a character based on data read in by a Reader object. Iterates through characterData's stored key-value pairs, settings fields as appropriate.
 	 * @param characterData Data read in by a Reader object, holds multiple key-value pairs.
+	 * @param game The Game object that created it.
 	 */
-	public Character(ArrayList<String[]> characterData) {
+	public Character(ArrayList<String[]> characterData, Game game) {
 		for (String[] field: characterData){
 			switch(field[0]){
 			case("Name"):
@@ -62,7 +67,12 @@ public class Character {
 				description = field[1];
 				break;
 			case("Max Health"):
-				setMaxHealth(Integer.parseInt(field[1]));
+				maxHealth = Integer.parseInt(field[1]);
+				health = maxHealth;
+				break;
+			case("Max Mana"):
+				maxMana = Integer.parseInt(field[1]);
+				mana = maxMana;
 				break;
 			case("Attack"):
 				attack = Integer.parseInt(field[1]);
@@ -76,15 +86,21 @@ public class Character {
 			case("Intelligence"):
 				intelligence = Integer.parseInt(field[1]);
 				break;
+			case("Speed"):
+				speed = Integer.parseInt(field[1]);
+				break;
 			case("Dexterity"):
 				dexterity = Integer.parseInt(field[1]);
 				break;
 			default:
 				System.out.println("Uh oh!");
 				break;
+				
 			}
 		}
 		random = new Random();
+		gameEngine = game;
+		input = new IO();
 	}
 	
 	/**
@@ -98,7 +114,7 @@ public class Character {
 	 * @param speed
 	 * @param dexterity
 	 */
-	public Character(String name, int maxHealth, int attack, int defence, int strength, int intelligence, int speed, int dexterity) {
+	public Character(String name, int maxHealth, int attack, int defence, int strength, int intelligence, int speed, int dexterity, Game game) {
 		this.name = name;
 		this.setMaxHealth(maxHealth);
 		health = maxHealth;
@@ -110,8 +126,14 @@ public class Character {
 		this.dexterity = dexterity;
 		
 		random = new Random();
+		gameEngine = game;
+		input = new IO();
 	}
 	
+	public Character() {
+		
+	}
+
 	/**
 	 * Called constantly, updates turnPoints by (roughly) speed, with a tiny modifier to help prevent two characters reaching 100 at the same time.
 	 * 
@@ -127,22 +149,45 @@ public class Character {
 		return false;
 	}
 	
-	/**
+	public String chooseAction(){
+		String[] options = {"Attack", "Heal", "Flee"};
+		int actionIndex = input.printMenu(options);
+		String action = options[actionIndex];
+		return action;
+	}
+	
+	/*/**
 	 * Performs a battle action against a target. Will be AI based on stats, currently oscillates evenly between attack and flee.
 	 * 
 	 * @param target The enemy being attacked/fleed.
-	 */
-	public void battleAction(Character target){
-		boolean attack = random.nextBoolean();
-		if (attack){
+	 *
+	public void battleAction(/*Character target){
+		
+		Character target;
+		if (AI.equals("support")){ //TODO Make case insensitive
+			target = gameEngine.getTarget(AI, 70);
+		}
+		else if (AI.equals("balanced")){
+			target = gameEngine.getTarget(AI, 70);
+		}
+		else{
+			target = gameEngine.getTarget(AI, -1);
+		}
+		
+		
+		
+		//boolean attack = random.nextBoolean();
+		
+		/*if (attack){
 			if( hit(target.getDexterity(), target.getSpeed())){
 				attack(target);
 			}
 		}
+		
 		else{
 			flee(target.getLevel(), target.getSpeed());
 		}
-	}
+	}*/
 
 	/**
 	 * Attacks the target, based on their defence.
@@ -150,7 +195,7 @@ public class Character {
 	 * Note: Random buffer is much more distinctive at very low base damages.
 	 * @param target The target to attack.
 	 */
-	private void attack(Character target){
+	public void attack(Character target){
 		int targetDefence = target.getDefence();
 		double damage = Math.ceil((attack + (0.5*strength) - (0.5*targetDefence)));
 		
@@ -161,17 +206,17 @@ public class Character {
 			damageRollBound = 1;
 		}
 		
-		boolean damageRollPositive = random.nextBoolean(); //Randomly decides whether the random damage buffer is good or bad.
+		
 		int damageRoll = random.nextInt(++damageRollBound); //Gets up to damageBufferPercent% (20%) of the base damage as a buffer.
-		if (!damageRollPositive){ //Sets it to be negative if apt.
-			damageRoll = -damageRoll;
-		}
+		damageRoll = input.reverseSign(damageRoll, false); //Returns either damageRoll, or -damageRoll, with equal probability.
 		damage += damageRoll; //Changes damage appropriately.
 		
 		if (damage <= 0){ //Stops negative damage.
 			damage = 1;
 		}
-		target.damage(damage); //Inflicts damage to enemy.
+		if (hit(target.getDexterity(), target.getSpeed())){
+			target.damage(damage); //Inflicts damage to enemy.
+		}
 	}
 	
 	/**
@@ -184,7 +229,6 @@ public class Character {
 		System.out.println(name + " has taken " + damageTaken + " points of damage!");
 		if (health <= 0){
 			System.out.println(name + " has died!");
-			System.out.println("There were " + countHit + " hits and " + countMiss + " misses.");
 			System.exit(0);
 		}
 	}
@@ -197,7 +241,7 @@ public class Character {
 	 * 
 	 * @return True if they can flee.
 	 */
-	private boolean flee(int enemyLevel, int enemySpeed){
+	public boolean flee(int enemyLevel, int enemySpeed){
 		//TODO Buffs/Statuses affect it
 		int maxChance = 95;
 		int minChance = 5;
@@ -220,7 +264,8 @@ public class Character {
 			if (moneyDrop > money){
 				moneyDrop = money;
 			}
-			System.out.println("In " + name + "'s haste to flee, they dropped " + moneyDrop + " gold coins!");			
+			System.out.println("In " + name + "'s haste to flee, they dropped " + moneyDrop + " gold coins!");	
+			System.exit(0); //TODO Delete later, when we have progressed past simulating a single battle.
 			return true;
 		}
 		return false;
@@ -233,6 +278,25 @@ public class Character {
 		 * 10, 1 = 35% Extreme mob advantage
 		 * 1, 10 = 95% Extreme player advantage
 		 * */
+	}
+	
+	public void heal(){
+		int healCost = 5;
+		int healAmount = 20;
+		if (mana >= healCost){
+			int randomBound = (int) healAmount/5;
+			int randomHeal = random.nextInt(randomBound);
+			randomHeal = input.reverseSign(randomHeal, false);
+			healAmount += randomHeal;
+			health += healAmount;
+			if (health > maxHealth){
+				health = maxHealth;
+			}
+			mana -= healCost;
+		}
+		else{
+			System.out.println("Not enough mana!");
+		}
 	}
 	
 	/**
@@ -330,8 +394,16 @@ public class Character {
 		this.turnPoints = turnPoints;
 	}
 	
-	private int getLevel() {
+	public int getLevel() {
 		return level;
+	}
+	
+	public int getHealth(){
+		return health;
+	}
+	
+	public int getMana(){
+		return mana;
 	}
 
 	public int getBaseMaxHealth() {
@@ -376,10 +448,14 @@ public class Character {
 		
 		if (hitChance <= randHit){
 			System.out.println(name + " missed!");
-			countMiss++;
 			return false;
 		}
 		return true;
+	}
+
+	public Character selectTarget() {
+		// TODO Choose a target based on AI, or bring up menu.
+		return null;
 	}
 	
 }
