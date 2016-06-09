@@ -52,7 +52,6 @@ public class Character {
 	private Game gameEngine;
 	private IO input; //Handles I/O operations.
 	
-	
 	/**
 	 * Creates a character based on data read in by a Reader object. Iterates through characterData's stored key-value pairs, settings fields as appropriate.
 	 * @param characterData Data read in by a Reader object, holds multiple key-value pairs.
@@ -215,7 +214,7 @@ public class Character {
 		if (damage <= 0){ //Stops negative damage.
 			damage = 1;
 		}
-		if (hit(target.getLevel(), target.getSpeed()){
+		if (hit(target.getDexterity(), target.getSpeed())){
 			target.damage(damage); //Inflicts damage to enemy.
 		}
 	}
