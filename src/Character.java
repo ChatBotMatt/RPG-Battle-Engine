@@ -150,6 +150,8 @@ public class Character {
 	}
 	
 	public String chooseAction(){
+		mana+=manaRegen();
+		System.out.println(name + " has recovered " + manaRegen() + " mana");
 		String[] options = {"Attack", "Heal", "Flee"};
 		int actionIndex = input.printMenu(options);
 		String action = options[actionIndex];
@@ -451,6 +453,22 @@ public class Character {
 			return false;
 		}
 		return true;
+	}
+	
+	public int manaRegen()
+	{
+		//TODO different calculations based on stances
+		int regen = intelligence/4;
+		int minRegen=2;
+		int maxRegen=50;
+		if (regen<minRegen){
+			regen=minRegen;
+		}
+		if(regen>maxRegen){
+			regen=maxRegen;
+		}
+			
+		return regen;
 	}
 
 	public Character selectTarget() {
