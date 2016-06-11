@@ -455,7 +455,7 @@ public class Character {
 		return true;
 	}
 	
-	public int manaRegen()
+	private int manaRegen()
 	{
 		//TODO different calculations based on stances
 		int regen = intelligence/4;
