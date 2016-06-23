@@ -303,6 +303,24 @@ public abstract class Character {
 		}
 	}
 	
+	public int regenerateMana()
+	{
+		//TODO different calculations based on stances
+		int regen = intelligence/4;
+		int minRegen=2;
+		int maxRegen=50;
+		
+		if (regen<minRegen){
+			regen=minRegen;
+		}
+		
+		if(regen>maxRegen){
+			regen=maxRegen;
+		}
+			
+		return regen;
+	}
+	
 	/**
 	 * Takes a value and adds a variance to it. E.g. Passing in 20 as a base and 25 as a variance will return a number between 75% and 125% of 20 (15-25)
 	 * Note: Can return negative values.
@@ -377,46 +395,6 @@ public abstract class Character {
 	public void setAttack(int attack) {
 		this.attack = attack;
 	}
-
-	/*public int getDefence() {
-		return info.getDefence();
-	}
-
-	public void setDefence(int defence) {
-		info.setDefence(defence);
-	}
-
-	public int getStrength() {
-		return info.getStrength();
-	}
-
-	public void setStrength(int strength) {
-		info.setStrength(strength);
-	}
-
-	public int getIntelligence() {
-		return info.getIntelligence();
-	}
-
-	public void setIntelligence(int intelligence) {
-		info.setIntelligence(intelligence);
-	}
-
-	public int getFitness() {
-		return info.getFitness();
-	}
-
-	public void setFitness(int fitness) {
-		info.setFitness(fitness);
-	}
-
-	public int getDexterity() {
-		return info.getDexterity();
-	}
-
-	public void setDexterity(int dexterity) {
-		info.setDexterity(dexterity);
-	}*/
 
 	public int getMaxMana() {
 		return maxMana;
@@ -516,11 +494,6 @@ public abstract class Character {
 
 	public void setMaxHealth(int maxHealth) {
 		this.maxHealth = maxHealth;
-	}
-
-	public Character selectTarget() {
-		// TODO Choose a target based on AI, or bring up menu.
-		return null;
 	}
 	
 }
