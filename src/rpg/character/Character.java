@@ -1,13 +1,7 @@
-/*
- * Decompiled with CFR 0_114.
- */
 package rpg.character;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Random;
 import rpg.character.CharacterInfo;
-import rpg.engine.Game;
 
 public abstract class Character {
     private String name;
@@ -27,27 +21,6 @@ public abstract class Character {
     private int turnPoints;
     private CharacterInfo info;
     private Random random;
-
-    /*
-     * Exception decompiling
-     */
-    public Character(ArrayList<String[]> characterData, Game game) {
-        // This method has failed to decompile.  When submitting a bug report, please provide this stack trace, and (if you hold appropriate legal rights) the relevant class file.
-        // org.benf.cfr.reader.util.CannotPerformDecode: reachable test BLOCK was exited and re-entered.
-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters.Misc.getFarthestReachableInRange(Misc.java:143)
-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters.SwitchReplacer.examineSwitchContiguity(SwitchReplacer.java:385)
-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters.SwitchReplacer.replaceRawSwitches(SwitchReplacer.java:65)
-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisInner(CodeAnalyser.java:422)
-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisOrWrapFail(CodeAnalyser.java:220)
-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysis(CodeAnalyser.java:165)
-        // org.benf.cfr.reader.entities.attributes.AttributeCode.analyse(AttributeCode.java:91)
-        // org.benf.cfr.reader.entities.Method.analyse(Method.java:354)
-        // org.benf.cfr.reader.entities.ClassFile.analyseMid(ClassFile.java:751)
-        // org.benf.cfr.reader.entities.ClassFile.analyseTop(ClassFile.java:683)
-        // org.benf.cfr.reader.Main.doJar(Main.java:129)
-        // org.benf.cfr.reader.Main.main(Main.java:181)
-        throw new IllegalStateException("Decompilation failed");
-    }
 
     public Character(String name, String description, int maxHealth, int maxMana, int attack, int defence, int strength, int intelligence, int fitness, int dexterity) {
         this.name = name;
@@ -76,7 +49,7 @@ public abstract class Character {
 
     public int calculateDamage(int enemyDefence) {
         int damageBufferMax = 20;
-        double damage = (double)this.attack + 0.5 * (double)this.strength - 0.5 * (double)enemyDefence;
+        double damage = this.attack + 0.5 * this.strength - 0.5 * enemyDefence;
         if ((damage = Math.ceil(this.variance(damage, damageBufferMax, true))) < 1.0) {
             damage = 1.0;
         }
@@ -87,10 +60,10 @@ public abstract class Character {
         int maxChance = 95;
         int minChance = 35;
         double hitChance = 75.0;
-        hitChance += (double)(this.dexterity - enemyDex) + 0.5 * (double)(this.fitness - enemyFitness);
-        if ((hitChance = this.variance(hitChance, 10, true)) > (double)maxChance) {
+        hitChance += (this.dexterity - enemyDex) + 0.5 * (this.fitness - enemyFitness);
+        if ((hitChance = this.variance(hitChance, 10, true)) > maxChance) {
             hitChance = maxChance;
-        } else if (hitChance < (double)minChance) {
+        } else if (hitChance < minChance) {
             hitChance = minChance;
         }
         return (int)Math.ceil(hitChance);
@@ -133,10 +106,27 @@ public abstract class Character {
                 this.health = this.maxHealth;
             }
             this.mana -= healCost;
+            System.out.println(name + " healed for " + healAmount + ".");
         } else {
             System.out.println("Not enough mana!");
         }
     }
+    
+	public int regenerateMana()
+	{
+		//TODO different calculations based on stances
+		int regen = intelligence/4;
+		int minRegen=2;
+		int maxRegen=50;
+		if (regen<minRegen){
+			regen=minRegen;
+		}
+		if(regen>maxRegen){
+			regen=maxRegen;
+		}
+			
+		return regen;
+	}
 
     private double variance(double base, int variance, boolean negativeAllowed) {
         if (variance < 1) {
@@ -295,10 +285,6 @@ public abstract class Character {
 
     public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
-    }
-
-    public Character selectTarget() {
-        return null;
     }
 }
 

@@ -1,6 +1,3 @@
-/*
- * Decompiled with CFR 0_114.
- */
 package rpg.character;
 
 import rpg.character.Character;

@@ -1,103 +1,116 @@
-/*
- * Decompiled with CFR 0_114.
- */
 package rpg.engine;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.logging.Logger;
+
 import mam95.tools.io.IO;
 import rpg.character.Character;
 import rpg.character.Enemy;
 import rpg.character.PartyMember;
 
 public class Game {
-    private ArrayList<Character> characters;
-    private ArrayList<Character> activeCharacters;
-    private ArrayList<Enemy> enemyFighters;
-    PartyMember deathsmasher = new PartyMember();
-    Enemy mike = new Enemy("Monster Mike", "a dedly monsta", 70, 15, 3, 3, 3, 3, 3, 3);
-    IO input;
-    Random random;
-    private Logger lumberjack = Logger.getLogger("Lumberjack");
+	private ArrayList<Character> characters;
+	private ArrayList<Character> activeCharacters;
+	private ArrayList<Enemy> enemyFighters;
+	PartyMember deathsmasher = new PartyMember();
+	Enemy mike = new Enemy("Monster Mike", "a dedly monsta", 70, 15, 3, 3, 3, 3, 3, 3);
+	IO input;
+	Random random;
+	//private Logger lumberjack = Logger.getLogger("Lumberjack");
 
-    public Game() {
-        this.lumberjack.info("Lumberjack is in the forest.");
-        this.lumberjack.info("Moooooo");
-        this.characters = new ArrayList();
-        this.activeCharacters = new ArrayList();
-        this.enemyFighters = new ArrayList();
-        this.characters.add(this.deathsmasher);
-        this.characters.add(this.mike);
-        this.activeCharacters.add(this.deathsmasher);
-        this.activeCharacters.add(this.mike);
-        this.enemyFighters.add(this.mike);
-        this.random = new Random();
-        this.input = new IO();
-        this.runGame();
-    }
+	public Game() {
+		//lumberjack.info("Lumberjack is in the forest.");
+		//lumberjack.info("Moooooo");
+		characters = new ArrayList<Character>();
+		activeCharacters = new ArrayList<Character>();
+		enemyFighters = new ArrayList<Enemy>();
+		characters.add(this.deathsmasher);
+		characters.add(this.mike);
+		activeCharacters.add(this.deathsmasher);
+		activeCharacters.add(this.mike);
+		enemyFighters.add(this.mike);
+		random = new Random();
+		input = new IO();
+		runGame();
+	}
 
-    public void runGame() {
-        this.runTurns();
-    }
+	public void runGame() {
+		while (true) {
+			runTurns();
+		}
+	}
 
-    private void printState() {
-        for (Character current : this.activeCharacters) {
-            System.out.println(String.valueOf(current.getName()) + " has " + current.getHealth() + " health points and " + current.getMana() + " mana.");
-        }
-    }
+	private void printState() {
+		for (Character current : this.activeCharacters) {
+			System.out.println(String.valueOf(current.getName()) + " has " + current.getHealth() + " health points and " + current.getMana() + " mana.");
+		}
+	}
 
-    /*
-     * Exception decompiling
-     */
-    private void runTurns() {
-        // This method has failed to decompile.  When submitting a bug report, please provide this stack trace, and (if you hold appropriate legal rights) the relevant class file.
-        // org.benf.cfr.reader.util.CannotPerformDecode: reachable test BLOCK was exited and re-entered.
-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters.Misc.getFarthestReachableInRange(Misc.java:143)
-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters.SwitchReplacer.examineSwitchContiguity(SwitchReplacer.java:385)
-        // org.benf.cfr.reader.bytecode.analysis.opgraph.op3rewriters.SwitchReplacer.replaceRawSwitches(SwitchReplacer.java:65)
-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisInner(CodeAnalyser.java:422)
-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysisOrWrapFail(CodeAnalyser.java:220)
-        // org.benf.cfr.reader.bytecode.CodeAnalyser.getAnalysis(CodeAnalyser.java:165)
-        // org.benf.cfr.reader.entities.attributes.AttributeCode.analyse(AttributeCode.java:91)
-        // org.benf.cfr.reader.entities.Method.analyse(Method.java:354)
-        // org.benf.cfr.reader.entities.ClassFile.analyseMid(ClassFile.java:751)
-        // org.benf.cfr.reader.entities.ClassFile.analyseTop(ClassFile.java:683)
-        // org.benf.cfr.reader.Main.doJar(Main.java:129)
-        // org.benf.cfr.reader.Main.main(Main.java:181)
-        throw new IllegalStateException("Decompilation failed");
-    }
+	private void runTurns() {
+		while (true) {
+			Character active = checkTurns(50); // Active character is whichever reaches TT first.
+			Character target; //TODO Update and make decent when we have multiple targets on any side. 
+			if (active.equals(mike)) {
+				target = deathsmasher;
+			} else {
+				target = mike;
+			}
+			printState(); // Print the current state of the battle.
+			active.regenerateMana();
+			String action = printBattleMenu(); // Get the action chosen by the user.
+			switch (action.toLowerCase()) {
 
-    private String printBattleMenu() {
-        String[] options = new String[]{"Attack", "Heal", "Flee"};
-        int actionIndex = this.input.printMenu(options);
-        String action = options[actionIndex];
-        return action;
-    }
+			case ("attack"):
+				int randomHit = random.nextInt(100);
+				int hitChance = active.hit(target.getDexterity(), target.getFitness());
 
-    private Character checkTurns(int turnDelay) {
-        Character active;
-        block2 : do {
-            try {
-                Thread.sleep(turnDelay);
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            ArrayList<Character> allFighters = new ArrayList<Character>(this.activeCharacters.size() + this.enemyFighters.size());
-            allFighters.addAll(this.activeCharacters);
-            Iterator iterator = allFighters.iterator();
-            do {
-                if (!iterator.hasNext()) continue block2;
-            } while ((active = (Character)iterator.next()).updateTurnPoints() != 100.0);
-            break;
-        } while (true);
-        active.setTurnPoints(0);
-        System.out.println("It is now " + active.getName() + "'s turn. \n");
-        return active;
-    }
+				if (randomHit <= hitChance) {
+					int damage = active.calculateDamage(target.getDefence());
+					target.damage(damage);
+				} else {
+					System.out.println(active.getName() + " missed!");
+				}
+				break;
+
+			case ("heal"):
+				active.heal();
+				break;
+
+			case ("flee"):
+				active.flee((enemyFighters.get(0)).getLevel(), (enemyFighters.get(0)).getFitness());
+				break;
+
+			default:
+				System.out.println("Bad option chosen somehow! Error in IO class!");
+			}
+		}
+	}
+
+	private String printBattleMenu() {
+		String[] options = new String[] { "Attack", "Heal", "Flee" };
+		//int actionIndex = input.printMenu(options);
+		String action = input.printMenu(options);//options[actionIndex];
+		return action;
+	}
+
+	private Character checkTurns(int turnDelay) {
+		while (true) {
+			try {
+				Thread.sleep(turnDelay);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			ArrayList<Character> allFighters;
+			allFighters = new ArrayList<Character>((activeCharacters.size() + enemyFighters.size()));
+			allFighters.addAll(activeCharacters);
+			for (Character active : allFighters) {
+				if ((active.updateTurnPoints() == 100)) {
+					active.setTurnPoints(0);
+					System.out.println("It is now " + active.getName() + "'s turn. \n");
+					return active;
+				}
+			}
+		}
+	}
 }
-
